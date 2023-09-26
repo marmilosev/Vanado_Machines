@@ -1,42 +1,26 @@
 ﻿using Dapper;
 using System.Data.SqlClient;
 using Vanado_Machines.Models;
+using Vanado_Machines.Models.Dto;
 
 namespace Vanado_Machines.Services
 {
     public class FailureService : IFailureService
     {
         private readonly IDbService _dbService;
-        private readonly string _connectionString;
+        private string _connectionString;
 
         public FailureService(IDbService dbService)
         {
             _dbService = dbService;
-            //_connectionString = "User ID=postgres;Password=admin;Host=localhost;Port=5432;Database=MachineDB;Pooling=true;Integrated Security=true;";
+            _connectionString = "User ID=postgres;Password=admin;Host=localhost;Port=5432;Database=MachineDB;Pooling=true;Integrated Security=true;";
         }
-        public async Task<bool> CreateFailure(Failure failure)
+        public async Task<bool> CreateFailure(FailureDto failure)
         {
-            var result = await _dbService.EditData(" INSERT INTO public.failure (id, name, priority, start_time, end_time, description, status, machine) " +
-                "SELECT @Id, @Name, @Priority, @StartTime, @EndTime, @Description, @Status, @Machine" +
-                " FROM public.machine WHERE id = @Machine;", failure);
+            var result = await _dbService.EditData(" INSERT INTO public.failure (id, name, priority, start_time, end_time, description, status, machine_id) " +
+                "SELECT @Id, @Name, @Priority, @StartTime, @EndTime, @Description, @Status, @MachineId" +
+                " FROM public.machine WHERE id = @MachineId;", failure);
             return true;
-            //try
-            //{
-            //    const string query = @"
-            //        INSERT INTO public.failure (id, name, priority, starttime, endttime, description, status, machineId)
-            //        SELECT @Id, @Name, @Priority, @StartTime, @EndTime, @Description, @Status, @MachineId
-            //        FROM public.machine
-            //        WHERE id = @MachineId";
-            //    using (var connection = new SqlConnection(_connectionString))
-            //    {
-            //        await connection.OpenAsync();
-            //        var affectedRows = await connection.ExecuteAsync(query, failure);
-            //        return affectedRows == 1;
-            //    }
-            //}catch (Exception ex)
-            //{
-            //    return false;
-            //}
         }
 
         public async Task<bool> DeleteFailure(int id)
@@ -57,24 +41,28 @@ namespace Vanado_Machines.Services
             return failureById;
         }
 
-        public async Task<Failure> UpdateFailure(Failure failure)
+        public async Task<Failure> UpdateFailure(FailureDto failure)
         {
-            //var updateFailure = await _dbService.EditData(
-            //    "UPDATE public.failure SET name = @Name, priority = @Priority, starttime = @StartTime, endtime = @EndTime, description = @Description, status = @Status," +
-            //    " machineId = (SELECT id FROM public.machine AS m WHERE m.name = @MachineName)", failure);
-            //return failure;
             try
             {
-                const string updateFailureQuery = @"
-                    UPDATE public.failure AS f
-                    SET 
-                        name = @Name, priority = @Priority, starttime = @StartTime, endtime = @EndTime, description = @Description, status = @Status,
-                                machineId = (SELECT id FROM public.machine AS m WHERE m.name = @MachineName)
-                    WHERE f.id = @Id";
+                const string updateQuery = @"
+            UPDATE public.failure
+            SET 
+                name = @Name,
+                priority = @Priority,
+                start_time = @StartTime,
+                end_time = @EndTime,
+                description = @Description,
+                status = @Status,
+                machine_id = (SELECT id FROM public.machine AS m WHERE m.id = @MachineId)
+            WHERE id = @Id
+            RETURNING *";
+
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     await connection.OpenAsync();
-                    var updatedFailure = await connection.QuerySingleOrDefaultAsync<Failure>(updateFailureQuery, failure);
+                    var updatedFailure = await connection.QuerySingleOrDefaultAsync<Failure>(updateQuery, failure);
+
                     return updatedFailure;
                 }
             }
@@ -82,6 +70,15 @@ namespace Vanado_Machines.Services
             {
                 return null;
             }
+        }
+
+        public async Task<bool> AddFailureToMachine(int failureId, int machineId)
+        { 
+            var result =
+                await _dbService.EditData(
+                    "INSERT INTO failure_machine (failure_id, machine_id) VALUES (@FailureId, @MachineId)",
+                    new { FailureId = failureId, MachineId = machineId });
+            return true;
         }
     }
 }
