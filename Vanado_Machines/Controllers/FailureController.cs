@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vanado_Machines.Models;
+using Vanado_Machines.Models.Dto;
 using Vanado_Machines.Services;
 
 namespace Vanado_Machines.Controllers
@@ -29,14 +30,14 @@ namespace Vanado_Machines.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateFailure([FromBody] Failure failure)
+        public async Task<IActionResult> CreateFailure([FromBody] FailureDto failure)
         {
             var result = await _failureService.CreateFailure(failure);
             return Ok(result);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateFailure([FromBody] Failure failure)
+        public async Task<IActionResult> UpdateFailure([FromBody] FailureDto failure)
         {
             var result = await _failureService.UpdateFailure(failure);
             return Ok(result);
