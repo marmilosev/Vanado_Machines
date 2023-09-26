@@ -48,5 +48,26 @@ namespace Vanado_Machines.Controllers
             var result = await _machineService.DeleteMachine(id);
             return Ok(result);
         }
+
+        [HttpGet("{id:int}/failures")]
+        public async Task<IActionResult> GetMachineFailures(int id)
+        {
+            var machine = await _machineService.GetMachineById(id);
+            if(machine == null)
+            {
+                return NotFound();
+            }
+            var failures = await _machineService.GetFailuresForMachine(id);
+            var averageDuration = failures.Any()
+                ? TimeSpan.FromTicks((long)failures.Average(f => f.EndTime.Ticks - f.StartTime.Ticks))
+                :TimeSpan.Zero;
+            var result = new
+            {
+                Machine = machine,
+                Failures = failures,
+                averageDuration = averageDuration
+            };
+            return Ok(result);
+        }
     }
 }

@@ -44,5 +44,15 @@ namespace Vanado_Machines.Services
                     machine);
             return machine;
         }
+
+       public async Task<List<Failure>> GetFailuresForMachine (int machineId)
+        {
+            var failuresList = await _dbService.GetAll<Failure>(
+                "SELECT f.* FROM failure f INNER JOIN failure_machine fm ON f.id = fm.failure_id WHERE fm.machine_id = @MachineId",
+                new { MachineId = machineId });
+            return failuresList;
+        }
+
+           
     }
 }

@@ -9,5 +9,6 @@ namespace Vanado_Machines.Services
         Task<Machine> GetMachineById(int id);
         Task<Machine> UpdateMachine(Machine machine);
         Task<bool> DeleteMachine(int id);
+        Task<List<Failure>> GetFailuresForMachine(int machineId);
     }
 }
