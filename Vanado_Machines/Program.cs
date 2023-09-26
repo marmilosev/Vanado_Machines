@@ -1,4 +1,6 @@
 using Dapper;
+using System.Data.SqlClient;
+using Vanado_Machines.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,3 +29,7 @@ app.MapControllers();
 app.Run();
 
 DefaultTypeMap.MatchNamesWithUnderscores = true;
+
+builder.Services.AddScoped<IDbService, DbService>();
+builder.Services.AddScoped<IMachineService, MachineService>();
+builder.Services.AddScoped<IFailureService, FailureService>();

@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<Machine> Machines { get; set; } = new List<Machine>();
+        public string MachineName { get; set; }
         public string Priority { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }

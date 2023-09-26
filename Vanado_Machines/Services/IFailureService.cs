@@ -4,9 +4,10 @@ namespace Vanado_Machines.Services
 {
     public interface IFailureService
     {
-        Task<bool> CreateFailur(Failure failure);
+        Task<bool> CreateFailure(Failure failure);
         Task<List<Failure>> GetAllFailures();
+        Task<Failure> GetFailureById(int id);
         Task<Failure> UpdateFailure(Failure failure);
-        Task<bool> DeleteFailure(int key);
+        Task<bool> DeleteFailure(int id);
     }
 }
