@@ -10,7 +10,7 @@ namespace Vanado_Machines.Controllers
     {
         private readonly IMachineService _machineService;
         public MachineController(IMachineService machineService)
-        { 
+        {
             _machineService = machineService;
         }
 

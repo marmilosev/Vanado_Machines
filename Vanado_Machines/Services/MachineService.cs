@@ -5,7 +5,8 @@ namespace Vanado_Machines.Services
     public class MachineService : IMachineService
     {
         private readonly IDbService _dbService;
-        public MachineService(IDbService dbService) { 
+        public MachineService(IDbService dbService)
+        {
             _dbService = dbService;
         }
         public async Task<bool> CreateMachine(Machine machine)
