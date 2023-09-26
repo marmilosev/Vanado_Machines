@@ -12,26 +12,31 @@ namespace Vanado_Machines.Services
         public FailureService(IDbService dbService)
         {
             _dbService = dbService;
+            //_connectionString = "User ID=postgres;Password=admin;Host=localhost;Port=5432;Database=MachineDB;Pooling=true;Integrated Security=true;";
         }
         public async Task<bool> CreateFailure(Failure failure)
         {
-            try
-            {
-                const string query = @"
-                    INSERT INTO public.failure (id, name, priority, starttime, endttime, description, status, machineId)
-                    SELECT @Id, @Name, @Priority, @StartTime, @EndTime, @Description, @Status, @MachineId
-                    FROM public.machine
-                    WHERE id = @MachineId";
-                using (var connection = new SqlConnection(_connectionString))
-                {
-                    await connection.OpenAsync();
-                    var affectedRows = await connection.ExecuteAsync(query, failure);
-                    return affectedRows == 1;
-                }
-            }catch (Exception ex)
-            {
-                return false;
-            }
+            var result = await _dbService.EditData(" INSERT INTO public.failure (id, name, priority, start_time, end_time, description, status, machine) " +
+                "SELECT @Id, @Name, @Priority, @StartTime, @EndTime, @Description, @Status, @Machine" +
+                " FROM public.machine WHERE id = @Machine;", failure);
+            return true;
+            //try
+            //{
+            //    const string query = @"
+            //        INSERT INTO public.failure (id, name, priority, starttime, endttime, description, status, machineId)
+            //        SELECT @Id, @Name, @Priority, @StartTime, @EndTime, @Description, @Status, @MachineId
+            //        FROM public.machine
+            //        WHERE id = @MachineId";
+            //    using (var connection = new SqlConnection(_connectionString))
+            //    {
+            //        await connection.OpenAsync();
+            //        var affectedRows = await connection.ExecuteAsync(query, failure);
+            //        return affectedRows == 1;
+            //    }
+            //}catch (Exception ex)
+            //{
+            //    return false;
+            //}
         }
 
         public async Task<bool> DeleteFailure(int id)
@@ -54,6 +59,10 @@ namespace Vanado_Machines.Services
 
         public async Task<Failure> UpdateFailure(Failure failure)
         {
+            //var updateFailure = await _dbService.EditData(
+            //    "UPDATE public.failure SET name = @Name, priority = @Priority, starttime = @StartTime, endtime = @EndTime, description = @Description, status = @Status," +
+            //    " machineId = (SELECT id FROM public.machine AS m WHERE m.name = @MachineName)", failure);
+            //return failure;
             try
             {
                 const string updateFailureQuery = @"
