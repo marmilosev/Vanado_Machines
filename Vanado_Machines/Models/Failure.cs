@@ -6,7 +6,7 @@ namespace Vanado_Machines.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public Machine Machine { get; set; }
+        public List<Machine> Machines { get; set; } = new List<Machine>();
         public string Priority { get; set; }
         [Column("start_time")]
         public DateTime StartTime { get; set; }
