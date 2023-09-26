@@ -6,7 +6,8 @@ namespace Vanado_Machines.Services
     {
         Task<bool> CreateMachine(Machine machine);
         Task<List<Machine>> GetAllMachines();
+        Task<Machine> GetMachineById(int id);
         Task<Machine> UpdateMachine(Machine machine);
-        Task<bool> DeleteMachine(int key);
+        Task<bool> DeleteMachine(int id);
     }
 }
