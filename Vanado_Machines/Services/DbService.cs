@@ -7,8 +7,9 @@ namespace Vanado_Machines.Services
     public class DbService : IDbService
     {
         private readonly IDbConnection _connection;
-        public DbService(IConfiguration configuration) {
-            _connection = new NpgsqlConnection(configuration.GetConnectionString("MachineDB"));
+        public DbService(IConfiguration configuration)
+        {
+            _connection = new NpgsqlConnection(configuration.GetConnectionString("MachineDBConnection"));
         }
         public async Task<int> EditData(string command, object parms)
         {
@@ -30,5 +31,9 @@ namespace Vanado_Machines.Services
             return result;
         }
 
+        public Task QueryAsync<T1, T2, T3>(string query, Func<object, object, object> value, string splitOn)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
