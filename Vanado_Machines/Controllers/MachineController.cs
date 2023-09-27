@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vanado_Machines.Models;
+using Vanado_Machines.Models.Dto;
 using Vanado_Machines.Services;
 
 namespace Vanado_Machines.Controllers
@@ -9,9 +10,11 @@ namespace Vanado_Machines.Controllers
     public class MachineController : Controller
     {
         private readonly IMachineService _machineService;
-        public MachineController(IMachineService machineService)
+        private readonly IFailureService _failureService;
+        public MachineController(IMachineService machineService, IFailureService failureService)
         {
             _machineService = machineService;
+            _failureService = failureService;
         }
 
         [HttpGet]
@@ -29,8 +32,15 @@ namespace Vanado_Machines.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMachine([FromBody] Machine machine)
+        public async Task<IActionResult> CreateMachine([FromBody] MachineDto machineDto)
         {
+            var machine = new Machine
+            {
+                Name = machineDto.Name
+            };
+            var failures = await _failureService.GetFailuresByIds(machineDto.FailureIds);
+            machine.failures = failures;
+
             var result = await _machineService.CreateMachine(machine);
             return Ok(result);
         }

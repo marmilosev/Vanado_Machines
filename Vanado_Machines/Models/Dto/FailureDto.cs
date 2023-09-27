@@ -6,7 +6,7 @@ namespace Vanado_Machines.Models.Dto
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int MachineId { get; set; }
+        public List<int> MachineIds { get; set; }
         public string Priority { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }

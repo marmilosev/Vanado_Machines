@@ -30,5 +30,9 @@ namespace Vanado_Machines.Services
             return result;
         }
 
+        public Task QueryAsync<T1, T2, T3>(string query, Func<object, object, object> value, string splitOn)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

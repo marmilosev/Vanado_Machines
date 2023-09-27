@@ -10,10 +10,12 @@ namespace Vanado_Machines.Services
         private readonly IDbService _dbService;
         private string _connectionString;
 
-        public FailureService(IDbService dbService)
+        public FailureService(IDbService dbService, IConfiguration configuration)
         {
             _dbService = dbService;
-            _connectionString = "User ID=postgres;Password=admin;Host=localhost;Port=5432;Database=MachineDB;Pooling=true;Integrated Security=true;";
+#pragma warning disable CS8601 // Possible null reference assignment.
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+#pragma warning restore CS8601 // Possible null reference assignment.
         }
         public async Task<bool> CreateFailure(FailureDto failure)
         {
@@ -72,13 +74,48 @@ namespace Vanado_Machines.Services
             }
         }
 
-        public async Task<bool> AddFailureToMachine(int failureId, int machineId)
-        { 
+        public async Task<bool> AddMachineToFailure(int failureId, int machineId)
+        {
             var result =
                 await _dbService.EditData(
                     "INSERT INTO failure_machine (failure_id, machine_id) VALUES (@FailureId, @MachineId)",
                     new { FailureId = failureId, MachineId = machineId });
             return true;
+        }
+
+        public Task<bool> AddFailureToMachine(int failureId, int machineId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<Machine>> GetMachinesForFailure(int failureId)
+        {
+            var machinesList = await _dbService.GetAll<Machine>(
+                "SELECT m.* FROM machine m " +
+                "INNER JOIN failure_machine fm ON m.id = fm.machine_id " +
+                 "WHERE fm.failure_id = @FailureId",
+        new { FailureId = failureId });
+            return machinesList;
+        }
+
+        public async Task<List<Failure>> GetFailuresByIds(List<int> failureIds)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    var query = "SELECT * FROM public.failure WHERE id IN @FailureIds";
+                    var failures = await connection.QueryAsync<Failure>(query, new { FailureIds = failureIds });
+
+                    return failures.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

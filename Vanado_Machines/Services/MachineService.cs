@@ -5,9 +5,13 @@ namespace Vanado_Machines.Services
     public class MachineService : IMachineService
     {
         private readonly IDbService _dbService;
-        public MachineService(IDbService dbService)
+        private readonly string _connectionString;
+        public MachineService(IDbService dbService, IConfiguration configuration)
         {
             _dbService = dbService;
+#pragma warning disable CS8601 // Possible null reference assignment.
+            _connectionString = configuration.GetConnectionString("MachineDBConnection");
+#pragma warning restore CS8601 // Possible null reference assignment.
         }
         public async Task<bool> CreateMachine(Machine machine)
         {

@@ -49,5 +49,12 @@ namespace Vanado_Machines.Controllers
             var result = await _failureService.DeleteFailure(id);
             return Ok(result);
         }
+
+        [HttpGet("{failureId:int}/machines")]
+        public async Task<IActionResult> GetMachinesForFailure(int failureId)
+        {
+            var machines = await _failureService.GetMachinesForFailure(failureId);
+            return Ok(machines);
+        }
     }
 }
