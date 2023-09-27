@@ -4,6 +4,10 @@ namespace Vanado_Machines.Services
 {
     public interface IMachineService
     {
-        public Task<IEnumerable<Machine>> GetMachines();
+        Task<bool> CreateMachine(Machine machine);
+        Task<List<Machine>> GetAllMachines();
+        Task<Machine> GetMachineById(int id);
+        Task<Machine> UpdateMachine(Machine machine);
+        Task<bool> DeleteMachine(int id);
     }
 }
