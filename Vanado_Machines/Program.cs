@@ -1,6 +1,4 @@
 using Dapper;
-using System.Data.SqlClient;
-using Vanado_Machines.Context;
 using Vanado_Machines.Services;
 
 internal class Program
@@ -18,11 +16,11 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddSingleton<DapperContext>();
+        //builder.Services.AddSingleton<DapperContext>();
 
-        //builder.Services.AddScoped<IDbService, DbService>();
+        builder.Services.AddScoped<IDbService, DbService>();
         builder.Services.AddScoped<IMachineService, MachineService>();
-        //builder.Services.AddScoped<IFailureService, FailureService>();
+        builder.Services.AddScoped<IFailureService, FailureService>();
 
         builder.Services.AddControllers();
 
