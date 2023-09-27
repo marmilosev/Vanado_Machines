@@ -18,11 +18,11 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddSingleton<DapperContext, DapperContext>();
+        builder.Services.AddSingleton<DapperContext>();
 
-        builder.Services.AddScoped<IDbService, DbService>();
+        //builder.Services.AddScoped<IDbService, DbService>();
         builder.Services.AddScoped<IMachineService, MachineService>();
-        builder.Services.AddScoped<IFailureService, FailureService>();
+        //builder.Services.AddScoped<IFailureService, FailureService>();
 
         builder.Services.AddControllers();
 
